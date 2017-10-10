@@ -35,12 +35,10 @@ namespace TelemetryReceiver
 
                     string returnData = Encoding.ASCII.GetString(receiveBytes);
 
-                    Console.WriteLine("This is the message you received " +
-                                                 returnData.ToString());
-                    Console.WriteLine("This message was sent from " +
-                                                RemoteIpEndPoint.Address.ToString() +
-                                                " on their port number " +
-                                                RemoteIpEndPoint.Port.ToString());
+                    Console.WriteLine(
+                        $"Message received from" +
+                        $" {RemoteIpEndPoint.Address.ToString()}:{RemoteIpEndPoint.Port.ToString()} :\n" +
+                        returnData.ToString());
                 }
                 catch (Exception e)
                 {

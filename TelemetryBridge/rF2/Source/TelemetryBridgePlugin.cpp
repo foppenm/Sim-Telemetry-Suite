@@ -61,7 +61,7 @@ void TelemetryBridgePlugin::SetEnvironment(const EnvironmentInfoV01 &info) {
 	serverHost = "127.0.0.1";
 
 	senderSocket = socket(PF_INET, SOCK_DGRAM, 0);
-	if (senderSocket  < 0) {
+	if (senderSocket < 0) {
 		return;
 	}
 
@@ -217,10 +217,21 @@ void TelemetryBridgePlugin::UpdateTelemetry(const TelemInfoV01 &info)
 
 void TelemetryBridgePlugin::UpdateScoring(const ScoringInfoV01 &info)
 {
-	// Do my own stuff here
-	memcpy(&message[0], &info.mTrackName, sizeof(char));
-	sendto(senderSocket, message, sizeof(message), 0, (struct sockaddr *) &sadSender, sizeof(struct sockaddr));
+	// variables
+	char buffer[1024];
 
+	ZeroMemory(buffer, sizeof(buffer));		// Fill my block of memory with zeroes
+
+
+
+	// Start writing values to the buffer
+	// Use snprintf to avoid buffer overflow
+	snprintf(buffer, sizeof(buffer),
+		"{\"time\":\"%.3f\",\"trackName\":\"%s\"}",
+		info.mCurrentET,
+		info.mTrackName);
+
+	sendto(senderSocket, buffer, sizeof(buffer), 0, (sockaddr*)&sadSender, sizeof(struct sockaddr));
 
 
 	// Note: function is called twice per second now (instead of once per second in previous versions)
@@ -245,8 +256,8 @@ void TelemetryBridgePlugin::UpdateScoring(const ScoringInfoV01 &info)
 		fprintf(fo, "InRealtime=%d StartLight=%d NumRedLights=%d\n", info.mInRealtime, info.mStartLight, info.mNumRedLights);
 		fprintf(fo, "PlayerName=%s PlrFileName=%s\n", info.mPlayerName, info.mPlrFileName);
 		fprintf(fo, "DarkCloud=%.2f Raining=%.2f AmbientTemp=%.1f TrackTemp=%.1f\n", info.mDarkCloud, info.mRaining, info.mAmbientTemp, info.mTrackTemp);
-		fprintf( fo, "Wind=(%.1f,%.1f,%.1f) mMinPathWetness=%.2f mMaxPathWetness=%.2f\n", info.mWind.x, info.mWind.y, info.mWind.z, info.mMinPathWetness, info.mMaxPathWetness );
-		
+		fprintf(fo, "Wind=(%.1f,%.1f,%.1f) mMinPathWetness=%.2f mMaxPathWetness=%.2f\n", info.mWind.x, info.mWind.y, info.mWind.z, info.mMinPathWetness, info.mMaxPathWetness);
+
 		// Print vehicle info
 		for (long i = 0; i < info.mNumVehicles; ++i)
 		{
