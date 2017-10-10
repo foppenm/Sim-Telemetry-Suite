@@ -86,9 +86,6 @@ private:
 	struct sockaddr_in sadSender;
 	const char *serverHost;
 	u_short serverPort;
-
-	// data variables
-	char message[4096];
 };
 
 
