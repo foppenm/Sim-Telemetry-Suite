@@ -270,6 +270,7 @@
       <ProgramDatabaseFile>bin\$(Platform)\Debug\$(ProjectName)_x64.pdb</ProgramDatabaseFile>
       <ImportLibrary>bin\$(Platform)\Debug\$(ProjectName)_x64.lib</ImportLibrary>
       <ProfileGuidedDatabase>$(OutDir)$(TargetName)_x64.pgd</ProfileGuidedDatabase>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -284,10 +285,10 @@
     </Xdcmake>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Source\Example.cpp" />
+    <ClCompile Include="Source\TelemetryBridgePlugin.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Include\Example.hpp" />
+    <ClInclude Include="Include\TelemetryBridgePlugin.hpp" />
     <ClInclude Include="Include\InternalsPlugin.hpp" />
     <ClInclude Include="Include\PluginObjects.hpp" />
   </ItemGroup>

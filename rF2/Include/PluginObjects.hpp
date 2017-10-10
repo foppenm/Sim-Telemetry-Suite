@@ -1,18 +1,18 @@
-//эээээээээээээээээээээээээээээээээээээээээээээээээээээээээээээээээээээээээээ
-//щ                                                                         ч
-//щ Module: Header file for plugin object types                             ч
-//щ                                                                         ч
-//щ Description: interface declarations for plugin objects                  ч
-//щ                                                                         ч
-//щ This source code module, and all information, data, and algorithms      ч
-//щ associated with it, are part of isiMotor Technology (tm).               ч
-//щ                 PROPRIETARY AND CONFIDENTIAL                            ч
-//щ Copyright (c) 1996-2013 Image Space Incorporated.  All rights reserved. ч
-//щ                                                                         ч
-//щ Change history:                                                         ч
-//щ   tag.2008.02.15: created                                               ч
-//щ                                                                         ч
-//ъъъъъъъъъъъъъъъъъъъъъъъъъъъъъъъъъъъъъъъъъъъъъъъъъъъъъъъъъъъъъъъъъъъъъъъъъъъ
+О╩©//О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫
+//О©╫                                                                         О©╫
+//О©╫ Module: Header file for plugin object types                             О©╫
+//О©╫                                                                         О©╫
+//О©╫ Description: interface declarations for plugin objects                  О©╫
+//О©╫                                                                         О©╫
+//О©╫ This source code module, and all information, data, and algorithms      О©╫
+//О©╫ associated with it, are part of isiMotor Technology (tm).               О©╫
+//О©╫                 PROPRIETARY AND CONFIDENTIAL                            О©╫
+//О©╫ Copyright (c) 1996-2013 Image Space Incorporated.  All rights reserved. О©╫
+//О©╫                                                                         О©╫
+//О©╫ Change history:                                                         О©╫
+//О©╫   tag.2008.02.15: created                                               О©╫
+//О©╫                                                                         О©╫
+//О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫
 
 #ifndef _PLUGIN_OBJECTS_HPP_
 #define _PLUGIN_OBJECTS_HPP_
@@ -23,60 +23,59 @@
 #pragma pack( push, 4 )
 
 
-//здддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддд©
-//Ё types of plugins                                                       Ё
-//юдддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддды
+//О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫д©
+//О©╫ types of plugins                                                       О©╫
+//О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫
 
 enum PluginObjectType
 {
-  PO_INVALID      = -1,
-  //-------------------
-  PO_GAMESTATS    =  0,
-  PO_NCPLUGIN     =  1,
-  PO_IVIBE        =  2,
-  PO_INTERNALS    =  3,
-  PO_RFONLINE     =  4,
-  //-------------------
-  PO_MAXIMUM
+	PO_INVALID = -1,
+	//-------------------
+	PO_GAMESTATS = 0,
+	PO_NCPLUGIN = 1,
+	PO_IVIBE = 2,
+	PO_INTERNALS = 3,
+	PO_RFONLINE = 4,
+	//-------------------
+	PO_MAXIMUM
 };
 
 
-//здддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддд©
-//Ё  PluginObject                                                          Ё
-//Ё    - interface used by plugin classes.                                 Ё
-//юдддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддды
+//О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫д©
+//О©╫  PluginObject                                                          О©╫
+//О©╫    - interface used by plugin classes.                                 О©╫
+//О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫
 
 class PluginObject
 {
- private:
+private:
 
-  class PluginInfo *mInfo;             // used by main executable to obtain info about the plugin that implements this object
+	class PluginInfo *mInfo;             // used by main executable to obtain info about the plugin that implements this object
 
- public:
+public:
 
-  void SetInfo( class PluginInfo *p )  { mInfo = p; }        // used by main executable
-  class PluginInfo *GetInfo() const    { return( mInfo ); }  // used by main executable
-  class PluginInfo *GetInfo()          { return( mInfo ); }  // used by main executable
+	void SetInfo(class PluginInfo *p) { mInfo = p; }        // used by main executable
+	class PluginInfo *GetInfo() const { return(mInfo); }  // used by main executable
+	class PluginInfo *GetInfo() { return(mInfo); }  // used by main executable
 };
 
 
-//здддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддд©
-//Ё typedefs for dll functions - easier to use a typedef than to type      Ё
-//Ё out the crazy syntax for declaring and casting function pointers       Ё
-//юдддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддды
+//О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫д©
+//О©╫ typedefs for dll functions - easier to use a typedef than to type      О©╫
+//О©╫ out the crazy syntax for declaring and casting function pointers       О©╫
+//О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫
 
-typedef const char *      ( __cdecl *GETPLUGINNAME )();
-typedef PluginObjectType  ( __cdecl *GETPLUGINTYPE )();
-typedef int               ( __cdecl *GETPLUGINVERSION )();
-typedef PluginObject *    ( __cdecl *CREATEPLUGINOBJECT )();
-typedef void              ( __cdecl *DESTROYPLUGINOBJECT )( PluginObject *obj );
+typedef const char *      (__cdecl *GETPLUGINNAME)();
+typedef PluginObjectType(__cdecl *GETPLUGINTYPE)();
+typedef int(__cdecl *GETPLUGINVERSION)();
+typedef PluginObject *    (__cdecl *CREATEPLUGINOBJECT)();
+typedef void(__cdecl *DESTROYPLUGINOBJECT)(PluginObject *obj);
 
 
-//здддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддд©
-//юдддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддддды
+//О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫д©
+//О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫
 
 // See #pragma at top of file
 #pragma pack( pop )
 
 #endif // _PLUGIN_OBJECTS_HPP_
-
