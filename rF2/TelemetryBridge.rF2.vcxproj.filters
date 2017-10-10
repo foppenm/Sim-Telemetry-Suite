@@ -15,18 +15,18 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Include\Example.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Include\InternalsPlugin.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Include\PluginObjects.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Include\TelemetryBridgePlugin.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\Example.cpp">
+    <ClCompile Include="Source\TelemetryBridgePlugin.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
