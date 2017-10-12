@@ -31,31 +31,11 @@ void __cdecl DestroyPluginObject(PluginObject *obj) { delete((TelemetryBridgePlu
 
 // TelemetryBridgePlugin class
 
-void TelemetryBridgePlugin::WriteToAllExampleOutputFiles(const char * const openStr, const char * const msg)
+
+void TelemetryBridgePlugin::Startup(long version)
 {
-	FILE *fo;
-
-	fo = fopen("ExampleInternalsTelemetryOutput.txt", openStr);
-	if (fo != NULL)
-	{
-		fprintf(fo, "%s\n", msg);
-		fclose(fo);
-	}
-
-	fo = fopen("ExampleInternalsScoringOutput.txt", openStr);
-	if (fo != NULL)
-	{
-		fprintf(fo, "%s\n", msg);
-		fclose(fo);
-	}
-}
-
-void TelemetryBridgePlugin::SetEnvironment(const EnvironmentInfoV01 &info) {
-
-	// as the SetEnvironment can be called several times at launch                  
-	if (environmentAlreadySet) {
-		return;
-	}
+	// Open ports, read configs, whatever you need to do.  For now, I'll just clear out the
+	// example output data files.
 
 	serverPort = 666;
 	serverHost = "127.0.0.1";
@@ -68,54 +48,6 @@ void TelemetryBridgePlugin::SetEnvironment(const EnvironmentInfoV01 &info) {
 	sadSender.sin_family = AF_INET;
 	sadSender.sin_port = htons(serverPort);
 	sadSender.sin_addr.S_un.S_addr = inet_addr(serverHost);
-
-	environmentAlreadySet = true;
-}
-
-
-void TelemetryBridgePlugin::Startup(long version)
-{
-	char temp[80];
-	sprintf(temp, "-STARTUP- (version %.3f)", (float)version / 1000.0f);
-
-	// Open ports, read configs, whatever you need to do.  For now, I'll just clear out the
-	// example output data files.
-	WriteToAllExampleOutputFiles("w", temp);
-
-	// default HW control enabled to true
-	mEnabled = true;
-}
-
-
-void TelemetryBridgePlugin::Shutdown()
-{
-	WriteToAllExampleOutputFiles("a", "-SHUTDOWN-");
-}
-
-
-void TelemetryBridgePlugin::StartSession()
-{
-	WriteToAllExampleOutputFiles("a", "--STARTSESSION--");
-}
-
-
-void TelemetryBridgePlugin::EndSession()
-{
-	WriteToAllExampleOutputFiles("a", "--ENDSESSION--");
-}
-
-
-void TelemetryBridgePlugin::EnterRealtime()
-{
-	// start up timer every time we enter realtime
-	mET = 0.0f;
-	WriteToAllExampleOutputFiles("a", "---ENTERREALTIME---");
-}
-
-
-void TelemetryBridgePlugin::ExitRealtime()
-{
-	WriteToAllExampleOutputFiles("a", "---EXITREALTIME---");
 }
 
 
@@ -218,110 +150,101 @@ void TelemetryBridgePlugin::UpdateTelemetry(const TelemInfoV01 &info)
 void TelemetryBridgePlugin::UpdateScoring(const ScoringInfoV01 &info)
 {
 	// variables
-	char buffer[1024];
-
+	char buffer[8000];
 	ZeroMemory(buffer, sizeof(buffer));		// Fill my block of memory with zeroes
 
+	// Opening json tag
+	snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), "{");
 
+	// General scoring info
+	snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), "\"trackName\":\"%s\"", info.mTrackName);
+	snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"session\":\"%d\"", info.mSession);
+	snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"numVehicles\":\"%d\"", info.mNumVehicles);
+	snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"currentET\":\"%.3f\"", info.mCurrentET);
+	snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"endET\":\"%.3f\"", info.mEndET);
+	snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"maxLaps\":\"%d\"", info.mMaxLaps);
+	snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"lapDist\":\"%.1f\"", info.mLapDist);
 
-	// Start writing values to the buffer
-	// Use snprintf to avoid buffer overflow
-	snprintf(buffer, sizeof(buffer),
-		"{\"time\":\"%.3f\",\"trackName\":\"%s\"}",
-		info.mCurrentET,
-		info.mTrackName);
+	// Session info
+	snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"gamePhase\":\"%d\"", info.mGamePhase);
+	snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"yellowFlagState\":\"%d\"", info.mYellowFlagState);
+	snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"sectorFlags\":\"(%d,%d,%d)\"", info.mSectorFlag[0], info.mSectorFlag[1], info.mSectorFlag[2]);
+	snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"inRealTime\":\"%d\"", info.mInRealtime);
+	snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"startLight\":\"%d\"", info.mStartLight);
+	snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"numRedLights\":\"%d\"", info.mNumRedLights);
+	snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"playerName\":\"%s\"", info.mPlayerName);
+	snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"plrFileName\":\"%s\"", info.mPlrFileName);
+	snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"darkCloud\":\"%.2f\"", info.mDarkCloud);
+	snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"raining\":\"%.2f\"", info.mRaining);
+	snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"ambientTemp\":\"%.1f\"", info.mAmbientTemp);
+	snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"trackTemp\":\"%.1f\"", info.mTrackTemp);
+	snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"wind\":\"(%.1f,%.1f,%.1f)\"", info.mWind.x, info.mWind.y, info.mWind.z);
+	snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"minPathWetness\":\"%.1f\"", info.mMinPathWetness);
+	snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"maxPathWetness\":\"%.1f\"", info.mMaxPathWetness);
 
-	sendto(senderSocket, buffer, sizeof(buffer), 0, (sockaddr*)&sadSender, sizeof(struct sockaddr));
+	// Create a vehicle array
+	snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"vehicles\":[");
 
-
-	// Note: function is called twice per second now (instead of once per second in previous versions)
-	FILE *fo = fopen("ExampleInternalsScoringOutput.txt", "a");
-	if (fo != NULL)
+	// Print vehicle info
+	for (long i = 0; i < info.mNumVehicles; ++i)
 	{
-		// Print general scoring info
-		fprintf(fo, "TrackName=%s\n", info.mTrackName);
-		fprintf(fo, "Session=%d NumVehicles=%d CurET=%.3f\n", info.mSession, info.mNumVehicles, info.mCurrentET);
-		fprintf(fo, "EndET=%.3f MaxLaps=%d LapDist=%.1f\n", info.mEndET, info.mMaxLaps, info.mLapDist);
+		VehicleScoringInfoV01 &vinfo = info.mVehicle[i];
 
-		// Note that only one plugin can use the stream (by enabling scoring updates) ... sorry if any clashes result
-		fprintf(fo, "START STREAM\n");
-		const char *ptr = info.mResultsStream;
-		while (*ptr != NULL)
-			fputc(*ptr++, fo);
-		fprintf(fo, "END STREAM\n");
-
-		// New version 2 stuff
-		fprintf(fo, "GamePhase=%d YellowFlagState=%d SectorFlags=(%d,%d,%d)\n", info.mGamePhase, info.mYellowFlagState,
-			info.mSectorFlag[0], info.mSectorFlag[1], info.mSectorFlag[2]);
-		fprintf(fo, "InRealtime=%d StartLight=%d NumRedLights=%d\n", info.mInRealtime, info.mStartLight, info.mNumRedLights);
-		fprintf(fo, "PlayerName=%s PlrFileName=%s\n", info.mPlayerName, info.mPlrFileName);
-		fprintf(fo, "DarkCloud=%.2f Raining=%.2f AmbientTemp=%.1f TrackTemp=%.1f\n", info.mDarkCloud, info.mRaining, info.mAmbientTemp, info.mTrackTemp);
-		fprintf(fo, "Wind=(%.1f,%.1f,%.1f) mMinPathWetness=%.2f mMaxPathWetness=%.2f\n", info.mWind.x, info.mWind.y, info.mWind.z, info.mMinPathWetness, info.mMaxPathWetness);
-
-		// Print vehicle info
-		for (long i = 0; i < info.mNumVehicles; ++i)
-		{
-			VehicleScoringInfoV01 &vinfo = info.mVehicle[i];
-			fprintf(fo, "Driver %d: %s\n", i, vinfo.mDriverName);
-			fprintf(fo, " ID=%d Vehicle=%s\n", vinfo.mID, vinfo.mVehicleName);
-			fprintf(fo, " Laps=%d Sector=%d FinishStatus=%d\n", vinfo.mTotalLaps, vinfo.mSector, vinfo.mFinishStatus);
-			fprintf(fo, " LapDist=%.1f PathLat=%.2f RelevantTrackEdge=%.2f\n", vinfo.mLapDist, vinfo.mPathLateral, vinfo.mTrackEdge);
-			fprintf(fo, " Best=(%.3f, %.3f, %.3f)\n", vinfo.mBestSector1, vinfo.mBestSector2, vinfo.mBestLapTime);
-			fprintf(fo, " Last=(%.3f, %.3f, %.3f)\n", vinfo.mLastSector1, vinfo.mLastSector2, vinfo.mLastLapTime);
-			fprintf(fo, " Current Sector 1 = %.3f, Current Sector 2 = %.3f\n", vinfo.mCurSector1, vinfo.mCurSector2);
-			fprintf(fo, " Pitstops=%d, Penalties=%d\n", vinfo.mNumPitstops, vinfo.mNumPenalties);
-
-			// New version 2 stuff
-			fprintf(fo, " IsPlayer=%d Control=%d InPits=%d LapStartET=%.3f\n", vinfo.mIsPlayer, vinfo.mControl, vinfo.mInPits, vinfo.mLapStartET);
-			fprintf(fo, " Place=%d VehicleClass=%s\n", vinfo.mPlace, vinfo.mVehicleClass);
-			fprintf(fo, " TimeBehindNext=%.3f LapsBehindNext=%d\n", vinfo.mTimeBehindNext, vinfo.mLapsBehindNext);
-			fprintf(fo, " TimeBehindLeader=%.3f LapsBehindLeader=%d\n", vinfo.mTimeBehindLeader, vinfo.mLapsBehindLeader);
-			fprintf(fo, " Pos=(%.3f,%.3f,%.3f)\n", vinfo.mPos.x, vinfo.mPos.y, vinfo.mPos.z);
-
-			// Forward is roughly in the -z direction (although current pitch of car may cause some y-direction velocity)
-			fprintf(fo, " LocalVel=(%.2f,%.2f,%.2f)\n", vinfo.mLocalVel.x, vinfo.mLocalVel.y, vinfo.mLocalVel.z);
-			fprintf(fo, " LocalAccel=(%.1f,%.1f,%.1f)\n", vinfo.mLocalAccel.x, vinfo.mLocalAccel.y, vinfo.mLocalAccel.z);
-
-			// Orientation matrix is left-handed
-			fprintf(fo, " [%6.3f,%6.3f,%6.3f]\n", vinfo.mOri[0].x, vinfo.mOri[0].y, vinfo.mOri[0].z);
-			fprintf(fo, " [%6.3f,%6.3f,%6.3f]\n", vinfo.mOri[1].x, vinfo.mOri[1].y, vinfo.mOri[1].z);
-			fprintf(fo, " [%6.3f,%6.3f,%6.3f]\n", vinfo.mOri[2].x, vinfo.mOri[2].y, vinfo.mOri[2].z);
-			fprintf(fo, " LocalRot=(%.3f,%.3f,%.3f)\n", vinfo.mLocalRot.x, vinfo.mLocalRot.y, vinfo.mLocalRot.z);
-			fprintf(fo, " LocalRotAccel=(%.2f,%.2f,%.2f)\n", vinfo.mLocalRotAccel.x, vinfo.mLocalRotAccel.y, vinfo.mLocalRotAccel.z);
+		if (i > 0) {
+			snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",{");
+		}
+		else {
+			snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), "{");
 		}
 
-		// Delimit sections
-		fprintf(fo, "\n");
+		snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), "\"id\":\"%d\"", vinfo.mID);
+		snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"driverName\":\"%s\"", vinfo.mDriverName);
+		snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"vehicleName\":\"%s\"", vinfo.mVehicleName);
+		snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"totalLaps\":\"%s\"", vinfo.mTotalLaps);
+		snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"sector\":\"%d\"", vinfo.mSector);
+		snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"finishStatus\":\"%d\"", vinfo.mFinishStatus);
+		snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"lapDist\":\"%.1f\"", vinfo.mLapDist);
+		snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"pathLateral\":\"%.2f\"", vinfo.mPathLateral);
+		snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"relevantTrackEdge\":\"%.2f\"", vinfo.mTrackEdge);
+		snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"best\":\"(%.3f, %.3f, %.3f)\"", vinfo.mBestSector1, vinfo.mBestSector2, vinfo.mBestLapTime);
+		snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"last\":\"(%.3f, %.3f, %.3f)\"", vinfo.mLastSector1, vinfo.mLastSector2, vinfo.mLastLapTime);
+		snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"currentSector1\":\"%.3f\"", vinfo.mCurSector1);
+		snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"currentSector2\":\"%.3f\"", vinfo.mCurSector2);
+		snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"numPitstops\":\"%d\"", vinfo.mNumPitstops);
+		snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"numPenalties\":\"%d\"", vinfo.mNumPenalties);
+		snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"isPlayer\":\"%d\"", vinfo.mIsPlayer);
+		snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"control\":\"%d\"", vinfo.mControl);
+		snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"inPits\":\"%d\"", vinfo.mInPits);
+		snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"lapStartET\":\"%.3f\"", vinfo.mLapStartET);
+		snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"place\":\"%d\"", vinfo.mPlace);
+		snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"vehicleClass\":\"%s\"", vinfo.mVehicleClass);
+		snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"timeBehindNext\":\"%.3f\"", vinfo.mTimeBehindNext);
+		snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"lapsBehindNext\":\"%d\"", vinfo.mLapsBehindNext);
+		snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"timeBehindLeader\":\"%.3f\"", vinfo.mTimeBehindLeader);
+		snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"lapsBehindLeader\":\"%d\"", vinfo.mLapsBehindLeader);
+		snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"Pos\":\"(%.3f,%.3f,%.3f)\"", vinfo.mPos.x, vinfo.mPos.y, vinfo.mPos.z);
 
-		// Close file
-		fclose(fo);
+		// Forward is roughly in the -z direction (although current pitch of car may cause some y-direction velocity)
+		snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"localVel\":\"(%.2f,%.2f,%.2f)\"", vinfo.mLocalVel.x, vinfo.mLocalVel.y, vinfo.mLocalVel.z);
+		snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"localAccel\":\"(%.1f,%.1f,%.1f)\"", vinfo.mLocalAccel.x, vinfo.mLocalAccel.y, vinfo.mLocalAccel.z);
+
+		// Orientation matrix is left-handed
+		snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"orientationMatrix0\":\"[%6.3f,%6.3f,%6.3f]\"", vinfo.mOri[0].x, vinfo.mOri[0].y, vinfo.mOri[0].z);
+		snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"orientationMatrix1\":\"[%6.3f,%6.3f,%6.3f]\"", vinfo.mOri[1].x, vinfo.mOri[1].y, vinfo.mOri[1].z);
+		snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"orientationMatrix2\":\"[%6.3f,%6.3f,%6.3f]\"", vinfo.mOri[2].x, vinfo.mOri[2].y, vinfo.mOri[2].z);
+
+		snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"localRot\":\"(%.3f,%.3f,%.3f)\"", vinfo.mLocalRot.x, vinfo.mLocalRot.y, vinfo.mLocalRot.z);
+		snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"localRotAccel\":\"(%.2f,%.2f,%.2f)\"", vinfo.mLocalRotAccel.x, vinfo.mLocalRotAccel.y, vinfo.mLocalRotAccel.z);
+
+		snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), "}");
 	}
+
+	// Close the vehicle array
+	snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), "]");
+
+	// Closing json character
+	snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), "}");
+
+	// Send the buffer out
+	sendto(senderSocket, buffer, sizeof(buffer), 0, (sockaddr*)&sadSender, sizeof(struct sockaddr));
 }
-
-
-bool TelemetryBridgePlugin::RequestCommentary(CommentaryRequestInfoV01 &info)
-{
-	// COMMENT OUT TO ENABLE EXAMPLE
-	return(false);
-
-	// only if enabled, of course
-	if (!mEnabled)
-		return(false);
-
-	// Note: function is called twice per second
-
-	// Say green flag event for no particular reason every 20 seconds ...
-	const float timeMod20 = fmodf(mET, 20.0f);
-	if (timeMod20 > 19.0f)
-	{
-		strcpy(info.mName, "GreenFlag");
-		info.mInput1 = 0.0;
-		info.mInput2 = 0.0;
-		info.mInput3 = 0.0;
-		info.mSkipChecks = true;
-		return(true);
-	}
-
-	return(false);
-}
-
