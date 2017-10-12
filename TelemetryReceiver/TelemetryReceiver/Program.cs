@@ -9,19 +9,9 @@ namespace TelemetryReceiver
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Setting up UDP client...");
-
-            var listenPort = 666;
-
-            // Creates a UdpClient for reading incoming data.
-            UdpClient receivingUdpClient = new UdpClient(listenPort);
-
-            // Creates an IPEndPoint to record the IP Address and port number of the sender. 
-            // The IPEndPoint will allow you to read datagrams sent from any source.
-            IPEndPoint RemoteIpEndPoint = new IPEndPoint(IPAddress.Any, listenPort);
+            var listener = new UdpListener(666);
 
             var loop = true;
-
             while (loop)
             {
                 try
@@ -29,15 +19,15 @@ namespace TelemetryReceiver
                     Console.WriteLine("Waiting for data...");
 
                     // Blocks until a message returns on this socket from a remote host.
-                    Byte[] receiveBytes = receivingUdpClient.Receive(ref RemoteIpEndPoint);
+                    Byte[] receiveBytes = listener.GetDatagram();
 
-                    Console.WriteLine("Received data!");
+                    Console.WriteLine("Received data:");
 
                     string returnData = Encoding.ASCII.GetString(receiveBytes);
 
                     Console.WriteLine(
                         $"Message received from" +
-                        $" {RemoteIpEndPoint.Address.ToString()}:{RemoteIpEndPoint.Port.ToString()} :\n" +
+                        $" {listener.RemoteIpEndpoint.Address.ToString()}:{listener.RemoteIpEndpoint.Port.ToString()} :\n" +
                         returnData.ToString());
                 }
                 catch (Exception e)
@@ -45,7 +35,6 @@ namespace TelemetryReceiver
                     Console.WriteLine(e.ToString());
                     loop = false;
                 }
-
             }
 
             Console.Read();

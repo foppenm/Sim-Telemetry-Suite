@@ -1,0 +1,421 @@
+﻿{
+  "application": "rfactor2",
+  "type": "scoring",
+  "trackName": "Mills Outer Loop A",
+  "session": 0,
+  "numVehicles": 5,
+  "currentET": 0.273,
+  "endET": 108000,
+  "maxLaps": 2147483647,
+  "lapDist": 3292.9,
+  "gamePhase": 9,
+  "yellowFlagState": 0,
+  "sectorFlags": [
+    11,
+    11,
+    11
+  ],
+  "inRealTime": 0,
+  "startLight": 0,
+  "numRedLights": 5,
+  "playerName": "Your Name",
+  "plrFileName": "player",
+  "darkCloud": 0,
+  "raining": 0,
+  "ambientTemp": 15,
+  "trackTemp": 15,
+  "wind": [
+    0,
+    0,
+    0
+  ],
+  "minPathWetness": 0,
+  "maxPathWetness": 0,
+  "vehicles": [
+    {
+      "id": 0,
+      "driverName": "Stijn Handgraaf",
+      "vehicleName": "129. Stijn Handgraaf (CUP)",
+      "totalLaps": 0,
+      "sector": 1,
+      "finishStatus": 0,
+      "lapDist": -208.3,
+      "pathLateral": -15.33,
+      "relevantTrackEdge": -3.88,
+      "best": [
+        -1,
+        -1,
+        -1
+      ],
+      "last": [
+        0,
+        0,
+        0
+      ],
+      "currentSector1": -1,
+      "currentSector2": -1,
+      "numPitstops": 0,
+      "numPenalties": 0,
+      "isPlayer": 0,
+      "control": 1,
+      "inPits": 1,
+      "lapStartET": 0,
+      "place": 1,
+      "vehicleClass": "SRVN F2000 2017-2",
+      "timeBehindNext": 0,
+      "lapsBehindNext": 0,
+      "timeBehindLeader": 0,
+      "lapsBehindLeader": 0,
+      "Pos": [
+        37.736,
+        0.464,
+        -4.814
+      ],
+      "localVel": [
+        0,
+        0,
+        0
+      ],
+      "localAccel": [
+        0,
+        0,
+        0
+      ],
+      "orientationMatrix": [
+        [
+          -1,
+          0,
+          -0.003
+        ],
+        [
+          0,
+          1,
+          0.005
+        ],
+        [
+          0.003,
+          0.005,
+          -1
+        ]
+      ],
+      "localRot": [
+        0,
+        0,
+        0
+      ],
+      "localRotAccel": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": 1,
+      "driverName": "Ferhat Cakal",
+      "vehicleName": "027. Ferhat Cakal",
+      "totalLaps": 0,
+      "sector": 1,
+      "finishStatus": 0,
+      "lapDist": -192.5,
+      "pathLateral": -15.14,
+      "relevantTrackEdge": -3.93,
+      "best": [
+        -1,
+        -1,
+        -1
+      ],
+      "last": [
+        0,
+        0,
+        0
+      ],
+      "currentSector1": -1,
+      "currentSector2": -1,
+      "numPitstops": 0,
+      "numPenalties": 0,
+      "isPlayer": 0,
+      "control": 1,
+      "inPits": 1,
+      "lapStartET": 0,
+      "place": 2,
+      "vehicleClass": "SRVN F2000 2017-2",
+      "timeBehindNext": -0.261,
+      "lapsBehindNext": 0,
+      "timeBehindLeader": -0.261,
+      "lapsBehindLeader": 0,
+      "Pos": [
+        21.798,
+        0.466,
+        -4.677
+      ],
+      "localVel": [
+        0,
+        0,
+        0
+      ],
+      "localAccel": [
+        0,
+        0,
+        0
+      ],
+      "orientationMatrix": [
+        [
+          -1,
+          0,
+          -0.003
+        ],
+        [
+          0,
+          1,
+          0.003
+        ],
+        [
+          0.003,
+          0.003,
+          -1
+        ]
+      ],
+      "localRot": [
+        0,
+        0,
+        0
+      ],
+      "localRotAccel": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": 2,
+      "driverName": "Glenn Bontenbal",
+      "vehicleName": "049. Glenn Bontenbal",
+      "totalLaps": 0,
+      "sector": 1,
+      "finishStatus": 0,
+      "lapDist": -177.8,
+      "pathLateral": -15.16,
+      "relevantTrackEdge": -3.95,
+      "best": [
+        -1,
+        -1,
+        -1
+      ],
+      "last": [
+        0,
+        0,
+        0
+      ],
+      "currentSector1": -1,
+      "currentSector2": -1,
+      "numPitstops": 0,
+      "numPenalties": 0,
+      "isPlayer": 0,
+      "control": 1,
+      "inPits": 1,
+      "lapStartET": 0,
+      "place": 3,
+      "vehicleClass": "SRVN F2000 2017-2",
+      "timeBehindNext": -0.243,
+      "lapsBehindNext": 0,
+      "timeBehindLeader": -0.503,
+      "lapsBehindLeader": 0,
+      "Pos": [
+        6.985,
+        0.467,
+        -4.677
+      ],
+      "localVel": [
+        0,
+        0,
+        0
+      ],
+      "localAccel": [
+        0,
+        0,
+        0
+      ],
+      "orientationMatrix": [
+        [
+          -1,
+          0,
+          -0.002
+        ],
+        [
+          0,
+          1,
+          0.002
+        ],
+        [
+          0.002,
+          0.002,
+          -1
+        ]
+      ],
+      "localRot": [
+        0,
+        0,
+        0
+      ],
+      "localRotAccel": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": 3,
+      "driverName": "Brian Setz",
+      "vehicleName": "095. Brian Setz (CUP)",
+      "totalLaps": 0,
+      "sector": 1,
+      "finishStatus": 0,
+      "lapDist": -150.5,
+      "pathLateral": -15.2,
+      "relevantTrackEdge": -3.98,
+      "best": [
+        -1,
+        -1,
+        -1
+      ],
+      "last": [
+        0,
+        0,
+        0
+      ],
+      "currentSector1": -1,
+      "currentSector2": -1,
+      "numPitstops": 0,
+      "numPenalties": 0,
+      "isPlayer": 0,
+      "control": 1,
+      "inPits": 1,
+      "lapStartET": 0,
+      "place": 4,
+      "vehicleClass": "SRVN F2000 2017-2",
+      "timeBehindNext": -0.447,
+      "lapsBehindNext": 0,
+      "timeBehindLeader": -0.95,
+      "lapsBehindLeader": 0,
+      "Pos": [
+        -20.395,
+        0.466,
+        -4.677
+      ],
+      "localVel": [
+        0,
+        0,
+        0
+      ],
+      "localAccel": [
+        0,
+        0,
+        0
+      ],
+      "orientationMatrix": [
+        [
+          -1,
+          0,
+          -0.002
+        ],
+        [
+          0,
+          1,
+          0.003
+        ],
+        [
+          0.002,
+          0.003,
+          -1
+        ]
+      ],
+      "localRot": [
+        0,
+        0,
+        0
+      ],
+      "localRotAccel": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": 4,
+      "driverName": "Johan van Doren",
+      "vehicleName": "059. Johan van Doren (CUP)",
+      "totalLaps": 0,
+      "sector": 1,
+      "finishStatus": 0,
+      "lapDist": -135,
+      "pathLateral": -15.21,
+      "relevantTrackEdge": -3.99,
+      "best": [
+        -1,
+        -1,
+        -1
+      ],
+      "last": [
+        0,
+        0,
+        0
+      ],
+      "currentSector1": -1,
+      "currentSector2": -1,
+      "numPitstops": 0,
+      "numPenalties": 0,
+      "isPlayer": 0,
+      "control": 1,
+      "inPits": 1,
+      "lapStartET": 0,
+      "place": 5,
+      "vehicleClass": "SRVN F2000 2017-2",
+      "timeBehindNext": -0.252,
+      "lapsBehindNext": 0,
+      "timeBehindLeader": -1.203,
+      "lapsBehindLeader": 0,
+      "Pos": [
+        -35.9,
+        0.466,
+        -4.676
+      ],
+      "localVel": [
+        0,
+        0,
+        0
+      ],
+      "localAccel": [
+        0,
+        0,
+        0
+      ],
+      "orientationMatrix": [
+        [
+          -1,
+          0,
+          0.014
+        ],
+        [
+          0,
+          1,
+          0.003
+        ],
+        [
+          -0.014,
+          0.003,
+          -1
+        ]
+      ],
+      "localRot": [
+        0,
+        0,
+        0
+      ],
+      "localRotAccel": [
+        0,
+        0,
+        0
+      ]
+    }
+  ]
+}
