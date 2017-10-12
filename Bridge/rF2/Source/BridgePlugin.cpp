@@ -1,5 +1,5 @@
 #include <WinSock2.h>			// socket WinSock2.h must be included before <windows.h>
-#include "TelemetryBridgePlugin.hpp"          // corresponding header file
+#include "BridgePlugin.hpp"          // corresponding header file
 #include <math.h>               // for atan2, sqrt
 #include <stdio.h>              // for sample output
 #include <limits>
@@ -14,7 +14,7 @@
 // plugin information
 
 extern "C" __declspec(dllexport)
-const char * __cdecl GetPluginName() { return("TelemetryBridge.rF2"); }
+const char * __cdecl GetPluginName() { return("Bridge.rF2"); }
 
 extern "C" __declspec(dllexport)
 PluginObjectType __cdecl GetPluginType() { return(PO_INTERNALS); }
@@ -23,16 +23,16 @@ extern "C" __declspec(dllexport)
 int __cdecl GetPluginVersion() { return(7); }
 
 extern "C" __declspec(dllexport)
-PluginObject * __cdecl CreatePluginObject() { return((PluginObject *) new TelemetryBridgePlugin); }
+PluginObject * __cdecl CreatePluginObject() { return((PluginObject *) new BridgePlugin); }
 
 extern "C" __declspec(dllexport)
-void __cdecl DestroyPluginObject(PluginObject *obj) { delete((TelemetryBridgePlugin *)obj); }
+void __cdecl DestroyPluginObject(PluginObject *obj) { delete((BridgePlugin *)obj); }
 
 
-// TelemetryBridgePlugin class
+// BridgePlugin class
 
 
-void TelemetryBridgePlugin::Startup(long version)
+void BridgePlugin::Startup(long version)
 {
 	// Open ports, read configs, whatever you need to do.  For now, I'll just clear out the
 	// example output data files.
@@ -51,7 +51,7 @@ void TelemetryBridgePlugin::Startup(long version)
 }
 
 
-void TelemetryBridgePlugin::UpdateTelemetry(const TelemInfoV01 &info)
+void BridgePlugin::UpdateTelemetry(const TelemInfoV01 &info)
 {
 	// Use the incoming data, for now I'll just write some of it to a file to a) make sure it
 	// is working, and b) explain the coordinate system a little bit (see header for more info)
@@ -147,7 +147,7 @@ void TelemetryBridgePlugin::UpdateTelemetry(const TelemInfoV01 &info)
 }
 
 
-void TelemetryBridgePlugin::UpdateScoring(const ScoringInfoV01 &info)
+void BridgePlugin::UpdateScoring(const ScoringInfoV01 &info)
 {
 	// variables
 	char buffer[8000];

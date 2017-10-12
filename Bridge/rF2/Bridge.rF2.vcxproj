@@ -20,7 +20,7 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{D0C09F9B-E1D6-4A04-B698-190F52BBA156}</ProjectGuid>
-    <ProjectName>TelemetryBridge.rF2</ProjectName>
+    <ProjectName>Bridge.rF2</ProjectName>
     <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -103,7 +103,7 @@
       <MkTypLibCompatible>true</MkTypLibCompatible>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <TargetEnvironment>Win32</TargetEnvironment>
-      <TypeLibraryName>.\Release/TelemetryBridge.rF2.tlb</TypeLibraryName>
+      <TypeLibraryName>.\Release/Bridge.rF2.tlb</TypeLibraryName>
       <HeaderFileName />
     </Midl>
     <ClCompile>
@@ -145,7 +145,7 @@
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MkTypLibCompatible>true</MkTypLibCompatible>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <TypeLibraryName>.\Release/TelemetryBridge.rF2.tlb</TypeLibraryName>
+      <TypeLibraryName>.\Release/Bridge.rF2.tlb</TypeLibraryName>
       <HeaderFileName>
       </HeaderFileName>
     </Midl>
@@ -194,7 +194,7 @@
       <MkTypLibCompatible>true</MkTypLibCompatible>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <TargetEnvironment>Win32</TargetEnvironment>
-      <TypeLibraryName>.\Debug/TelemetryBridge.rF2.tlb</TypeLibraryName>
+      <TypeLibraryName>.\Debug/Bridge.rF2.tlb</TypeLibraryName>
       <HeaderFileName />
     </Midl>
     <ClCompile>
@@ -239,7 +239,7 @@
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MkTypLibCompatible>true</MkTypLibCompatible>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <TypeLibraryName>.\Debug/TelemetryBridge.rF2.tlb</TypeLibraryName>
+      <TypeLibraryName>.\Debug/Bridge.rF2.tlb</TypeLibraryName>
       <HeaderFileName>
       </HeaderFileName>
     </Midl>
@@ -285,10 +285,10 @@
     </Xdcmake>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Source\TelemetryBridgePlugin.cpp" />
+    <ClCompile Include="Source\BridgePlugin.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Include\TelemetryBridgePlugin.hpp" />
+    <ClInclude Include="Include\BridgePlugin.hpp" />
     <ClInclude Include="Include\InternalsPlugin.hpp" />
     <ClInclude Include="Include\PluginObjects.hpp" />
   </ItemGroup>
