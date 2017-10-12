@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace TelemetryReceiver.Models
+namespace Receiver.Models
 {
     public class Vehicle
     {

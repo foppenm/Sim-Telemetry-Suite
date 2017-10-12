@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8.00"
-	Name="TelemetryBridge.rF2"
+	Name="Bridge.rF2"
 	ProjectGUID="{D0C09F9B-E1D6-4A04-B698-190F52BBA156}"
 	>
 	<Platforms>
@@ -41,7 +41,7 @@
 				MkTypLibCompatible="true"
 				SuppressStartupBanner="true"
 				TargetEnvironment="1"
-				TypeLibraryName=".\Release/TelemetryBridge.rF2.tlb"
+				TypeLibraryName=".\Release/Bridge.rF2.tlb"
 				HeaderFileName=""
 			/>
 			<Tool
@@ -53,7 +53,7 @@
 				StringPooling="true"
 				StructMemberAlignment="3"
 				EnableFunctionLevelLinking="true"
-				PrecompiledHeaderFile=".\Release/TelemetryBridge.rF2.pch"
+				PrecompiledHeaderFile=".\Release/Bridge.rF2.pch"
 				AssemblerListingLocation=".\Release/"
 				ObjectFile=".\Release/"
 				ProgramDataBaseFileName=".\Release/"
@@ -74,11 +74,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile=".\Release/TelemetryBridge.rF2.dll"
+				OutputFile=".\Release/Bridge.rF2.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				GenerateManifest="false"
-				ImportLibrary=".\Release/TelemetryBridge.rF2.lib"
+				ImportLibrary=".\Release/Bridge.rF2.lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -93,7 +93,7 @@
 			<Tool
 				Name="VCBscMakeTool"
 				SuppressStartupBanner="true"
-				OutputFile=".\Release/TelemetryBridge.rF2.bsc"
+				OutputFile=".\Release/Bridge.rF2.bsc"
 			/>
 			<Tool
 				Name="VCFxCopTool"
@@ -137,7 +137,7 @@
 				MkTypLibCompatible="true"
 				SuppressStartupBanner="true"
 				TargetEnvironment="1"
-				TypeLibraryName=".\Debug/TelemetryBridge.rF2.tlb"
+				TypeLibraryName=".\Debug/Bridge.rF2.tlb"
 				HeaderFileName=""
 			/>
 			<Tool
@@ -149,7 +149,7 @@
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="0"
 				StructMemberAlignment="3"
-				PrecompiledHeaderFile=".\Debug/TelemetryBridge.rF2.pch"
+				PrecompiledHeaderFile=".\Debug/Bridge.rF2.pch"
 				AssemblerListingLocation=".\Debug/"
 				ObjectFile=".\Debug/"
 				ProgramDataBaseFileName=".\Debug/"
@@ -171,13 +171,13 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile=".\Debug/TelemetryBridge.rF2.dll"
+				OutputFile=".\Debug/Bridge.rF2.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
 				GenerateManifest="false"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile=".\Debug/TelemetryBridge.rF2.pdb"
-				ImportLibrary=".\Debug/TelemetryBridge.rF2.lib"
+				ProgramDatabaseFile=".\Debug/Bridge.rF2.pdb"
+				ImportLibrary=".\Debug/Bridge.rF2.lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -192,7 +192,7 @@
 			<Tool
 				Name="VCBscMakeTool"
 				SuppressStartupBanner="true"
-				OutputFile=".\Debug/TelemetryBridge.rF2.bsc"
+				OutputFile=".\Debug/Bridge.rF2.bsc"
 			/>
 			<Tool
 				Name="VCFxCopTool"

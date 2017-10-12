@@ -1,16 +1,16 @@
 #include "InternalsPlugin.hpp"
 
 // This is used for the app to use the plugin for its intended purpose
-class TelemetryBridgePlugin : public InternalsPluginV07
+class BridgePlugin : public InternalsPluginV07
 {
 
 public:
 
 	// Constructor/destructor
-	TelemetryBridgePlugin() {
+	BridgePlugin() {
 		senderSocket = 0;
 	}
-	~TelemetryBridgePlugin() {}
+	~BridgePlugin() {}
 
 	// These are the functions derived from base class InternalsPlugin
 	// that can be implemented.
