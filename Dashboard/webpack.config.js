@@ -1,22 +1,40 @@
-﻿const path = require('path');
-const webpack = require('webpack');
+﻿const path = require('path')
+const webpack = require('webpack')
+const autoprefixer = require('autoprefixer')
 
 module.exports = {
     resolve: {
-        // For modules referenced with no filename extension, Webpack will consider these extensions
-        extensions: ['.js']
+        //extensions: ['.js']
     },
     module: {
-        rules: [
+        loaders: [
             {
                 test: /\.js$/,
-                exclude: /(node_modules|bower_components)/,
-                use: {
-                    loader: 'babel-loader',
-                    options: {
-                        presets: ['env']
-                    }
-                }
+                loader: 'babel-loader',
+                exclude: /node_modules/,
+                include: path.join(__dirname, 'src'),
+                //options: {
+                //    presets: ['env'],
+                //    plugins: ['transform-class-properties'],
+                //}
+            },
+            {
+                test: /\.css$/,
+                use: [
+                    'style-loader',
+                    'css-loader'
+                ]
+            },
+            // fonts and svg
+            { test: /\.woff(\?v=\d+\.\d+\.\d+)?$/, loader: "url?limit=10000&mimetype=application/font-woff" },
+            { test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/, loader: "url?limit=10000&mimetype=application/font-woff" },
+            { test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: "url?limit=10000&mimetype=application/octet-stream" },
+            { test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: "file" },
+            { test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: "url?limit=10000&mimetype=image/svg+xml" },
+            {
+                // images
+                test: /\.(ico|jpe?g|png|gif)$/,
+                loader: "file"
             }
         ]
     },
@@ -25,11 +43,26 @@ module.exports = {
         main: ['./app/boot.js']
     },
     plugins: [
-        //new webpack.HotModuleReplacementPlugin()
+        new webpack.ProvidePlugin({
+            jQuery: 'jquery',
+            $: 'jquery',
+            jquery: 'jquery',
+            'window.jquery': 'jquery',
+            'window.jQuery': 'jquery',
+            'window.$': 'jquery',
+        }),
+        new webpack.DefinePlugin({
+            'process.env': {
+                'NODE_ENV': JSON.stringify(process.env.NODE_ENV)
+            }
+        }),
+        new webpack.HotModuleReplacementPlugin(),
+        new webpack.NoEmitOnErrorsPlugin()
     ],
     output: {
         path: path.join(__dirname, 'wwwroot', 'dist'),
         publicPath: '/dist/',
         filename: '[name].js'
     },
-};
+    watch: true
+}
