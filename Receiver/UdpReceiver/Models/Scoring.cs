@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Receiver.Models
+namespace UdpReceiver.Models
 {
     public class Scoring
     {
