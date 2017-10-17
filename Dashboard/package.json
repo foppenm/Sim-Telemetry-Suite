@@ -39,13 +39,13 @@
     "webpack-hot-middleware": "^2.19.1"
   },
   "dependencies": {
+    "@aspnet/signalr-client": "^1.0.0-alpha2-final",
     "classnames": "^2.2.0",
     "eventemitter3": "^2.0.3",
     "font-awesome": "^4.3.0",
     "foundation-sites": "^6.1.2",
     "jquery": "^3.2.1",
     "paper": "^0.11.5",
-    "signalr": "^2.2.2",
     "what-input": "^1.1.4"
   }
 }

@@ -6,21 +6,23 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Web.Hubs;
 
 namespace TelemetryDashboard
 {
     public class Startup
     {
+        public IConfiguration Configuration { get; }
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
 
-        public IConfiguration Configuration { get; }
-
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSignalR();
             services.AddMvc();
         }
 
@@ -32,9 +34,9 @@ namespace TelemetryDashboard
                 app.UseDeveloperExceptionPage();
                 app.UseBrowserLink();
                 app.UseWebpackDevMiddleware(new Microsoft.AspNetCore.SpaServices.Webpack.WebpackDevMiddlewareOptions
-                    {
-                        HotModuleReplacement = true,
-                        HotModuleReplacementClientOptions = new Dictionary<string, string> {
+                {
+                    HotModuleReplacement = true,
+                    HotModuleReplacementClientOptions = new Dictionary<string, string> {
                         { "reload", "true" },
                     },
                 });
@@ -45,6 +47,11 @@ namespace TelemetryDashboard
             }
 
             app.UseStaticFiles();
+
+            app.UseSignalR(routes =>
+            {
+                routes.MapHub<TelemetryHub>("telemetry");
+            });
 
             app.UseMvc(routes =>
             {

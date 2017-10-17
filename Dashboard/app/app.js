@@ -9,17 +9,26 @@ export class App {
         this.handleReceive = this.handleReceive.bind(this);
     }
 
+    start() {
+        this.telemetryHub = new TelemetryHub("/telemetry");
+        this.telemetryHub.on("connected", this.handleConnected);
+        this.telemetryHub.on("receive", this.handleReceive);
+
+        // Draw the view now:
+        paper.view.draw();
+    }
+
     onMouseDrag(event) {
         let nativeDelta = new paper.Point(
             event.offsetX - this.mouseNativeStart.x,
             event.offsetY - this.mouseNativeStart.y
         );
+
         // Move into view coordinates to subract delta,
         //  then back into project coords.
         view.center = view.viewToProject(
             view.projectToView(this.viewCenterStart)
                 .subtract(nativeDelta));
-
     }
 
     handleConnected(connection) {
@@ -96,15 +105,6 @@ export class App {
         //    }
         //}
 
-        paper.view.draw();
-    }
-
-    start() {
-        this.telemetryHub = new TelemetryHub("http://localhost:8080");
-        this.telemetryHub.on("connected", this.handleConnected);
-        this.telemetryHub.on("receive", this.handleReceive);
-
-        // Draw the view now:
         paper.view.draw();
     }
 }
