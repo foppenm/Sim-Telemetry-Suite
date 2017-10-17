@@ -3,9 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27004.2002
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UdpReceiver", "UdpReceiver\UdpReceiver.csproj", "{0B470CE7-9AF3-40BC-99DB-39E531D34A4C}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimTelemetryApi", "SimTelemetryApi\SimTelemetryApi.csproj", "{D8DAAABE-1FE5-49E9-8F47-9633AF93026D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Receiver", "Receiver.csproj", "{A6A39159-AC06-4FE8-B6AD-FBFA55921BF2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,14 +11,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{0B470CE7-9AF3-40BC-99DB-39E531D34A4C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0B470CE7-9AF3-40BC-99DB-39E531D34A4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0B470CE7-9AF3-40BC-99DB-39E531D34A4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0B470CE7-9AF3-40BC-99DB-39E531D34A4C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D8DAAABE-1FE5-49E9-8F47-9633AF93026D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D8DAAABE-1FE5-49E9-8F47-9633AF93026D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D8DAAABE-1FE5-49E9-8F47-9633AF93026D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D8DAAABE-1FE5-49E9-8F47-9633AF93026D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A6A39159-AC06-4FE8-B6AD-FBFA55921BF2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A6A39159-AC06-4FE8-B6AD-FBFA55921BF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A6A39159-AC06-4FE8-B6AD-FBFA55921BF2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A6A39159-AC06-4FE8-B6AD-FBFA55921BF2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
