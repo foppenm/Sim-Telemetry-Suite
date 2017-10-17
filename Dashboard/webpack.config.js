@@ -3,9 +3,6 @@ const webpack = require('webpack')
 const autoprefixer = require('autoprefixer')
 
 module.exports = {
-    resolve: {
-        //extensions: ['.js']
-    },
     module: {
         loaders: [
             {

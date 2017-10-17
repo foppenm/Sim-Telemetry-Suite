@@ -7,8 +7,6 @@ import jQuery from 'jquery'
 window.$ = jQuery;
 window.jQuery = jQuery;
 
-import 'signalr/jquery.signalR.js';
-
 let canvas = document.getElementById('myCanvas');
 paper.setup(canvas);            // Create an empty project and a view for the canvas
 
