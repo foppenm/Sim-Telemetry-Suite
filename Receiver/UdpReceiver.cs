@@ -2,26 +2,39 @@
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.SignalR.Client;
 
 namespace Receiver
 {
     public class UdpReceiver : IDisposable
     {
         private readonly UdpClient _udpClient;
+        private readonly HubConnection _hubConnection;
 
-        public UdpReceiver(int udpPort)
+        public UdpReceiver(int receiveUdpPort, string sendHubConnectionUrl)
         {
-            _udpClient = new UdpClient(udpPort);
+            _udpClient = new UdpClient(receiveUdpPort);
+            _hubConnection = new HubConnectionBuilder()
+                .WithUrl(sendHubConnectionUrl)
+                .WithConsoleLogger()
+                .WithJsonProtocol()
+                .WithTransport(Microsoft.AspNetCore.Sockets.TransportType.WebSockets)
+                .Build();
         }
 
-        public void Start()
+        public async Task Start()
         {
+            // Start the hub connection
+            await _hubConnection.StartAsync();
+
             // Set up UDP Listener
-            Task.Run(ListenForData);
+            await ListenForData();
         }
 
         private async Task ListenForData()
         {
+            Console.WriteLine("Started listening to UDP packets.");
+
             var loop = true;
             while (loop)
             {
@@ -42,8 +55,8 @@ namespace Receiver
                         $" {udpResult.RemoteEndPoint.Address.ToString()}:{udpResult.RemoteEndPoint.Port.ToString()} :\n" +
                         returnData.ToString());
 
-                    // TODO: send the json string to the clients
-                    //await _telemetryHubContext.Clients.All.InvokeAsync("status", returnData);
+                    // Send the json string to the clients
+                    await _hubConnection.InvokeAsync("status", returnData);
                 }
                 catch (Exception e)
                 {
