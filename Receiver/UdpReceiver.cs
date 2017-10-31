@@ -1,37 +1,22 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using Receiver.Json;
+using System;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.SignalR.Client;
 
 namespace Receiver
 {
     public class UdpReceiver : IDisposable
     {
         private readonly UdpClient _udpClient;
-        private readonly HubConnection _hubConnection;
 
-        public UdpReceiver(int receiveUdpPort, string sendHubConnectionUrl)
+        public UdpReceiver(int receiveUdpPort)
         {
             _udpClient = new UdpClient(receiveUdpPort);
-            _hubConnection = new HubConnectionBuilder()
-                .WithUrl(sendHubConnectionUrl)
-                .WithConsoleLogger()
-                .WithJsonProtocol()
-                .WithTransport(Microsoft.AspNetCore.Sockets.TransportType.WebSockets)
-                .Build();
         }
 
-        public async Task Start()
-        {
-            // Start the hub connection
-            await _hubConnection.StartAsync();
-
-            // Set up UDP Listener
-            await ListenForData();
-        }
-
-        private async Task ListenForData()
+        public async Task ListenForData()
         {
             Console.WriteLine("Started listening to UDP packets.");
 
@@ -40,23 +25,17 @@ namespace Receiver
             {
                 try
                 {
-                    Console.WriteLine("Waiting for Bridge data...");
-
                     // Blocks until a message returns on this socket from a remote host.
                     var udpResult = await _udpClient.ReceiveAsync();
-                    var receiveBytes = udpResult.Buffer;
+                    var json = Encoding.UTF8.GetString(udpResult.Buffer).Trim('\0');
+                    var track = JsonConvert.DeserializeObject<Track>(json);
 
-                    Console.WriteLine("Received data:");
-
-                    string returnData = Encoding.ASCII.GetString(receiveBytes).Trim('\0');
-
-                    Console.WriteLine(
-                        $"Message received from" +
-                        $" {udpResult.RemoteEndPoint.Address.ToString()}:{udpResult.RemoteEndPoint.Port.ToString()} :\n" +
-                        returnData.ToString());
-
-                    // Send the json string to the clients
-                    await _hubConnection.InvokeAsync("status", returnData);
+                    // Add the message to the collection
+                    if (Globals.Messages.Count > 9)
+                    {
+                        Globals.Messages.RemoveAt(0);
+                    }
+                    Globals.Messages.Add(track);
                 }
                 catch (Exception e)
                 {
