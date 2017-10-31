@@ -8,21 +8,6 @@ export class TelemetryHub extends EventEmitter {
     constructor(hostUrl) {
         super();
 
-        //this.connection = $.hubConnection(hostUrl);
-        //this.proxy = this.connection.createHubProxy("telemetryHub");
-
-        //this.proxy.on('status', (message) => {
-        //    this.emit('receive', JSON.parse(message));
-        //});
-
-        //connection.start()
-        //    .done((connection) => {
-        //        this.emit('connected', connection);
-        //    })
-        //    .fail((connection) => {
-        //        console.log("Could not connect to '" + connection.host + "'");
-        //    });
-
         // Set up the hub connection
         let connection = new HubConnection('/telemetry');
 

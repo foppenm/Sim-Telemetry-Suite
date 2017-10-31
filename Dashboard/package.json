@@ -46,6 +46,7 @@
     "foundation-sites": "^6.1.2",
     "jquery": "^3.2.1",
     "paper": "^0.11.5",
+    "vue": "^2.5.2",
     "what-input": "^1.1.4"
   }
 }

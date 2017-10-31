@@ -1,10 +1,10 @@
-﻿<!DOCTYPE html>
-<html>
+﻿<!doctype html>
+<html class="no-js" lang="en">
 <head>
     <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - TelemetryDashboard</title>
-
     <environment include="Development">
         <link rel="stylesheet" href="~/css/site.css" />
     </environment>
@@ -14,31 +14,37 @@
 </head>
 <body>
 
-    <div class="top-bar">
-        <div class="top-bar-left">
-            <ul class="menu">
-                <li class="menu-text">Marketing Site</li>
-                <li><a href="#">One</a></li>
-                <li><a href="#">Two</a></li>
-            </ul>
+    <div id="app" class="grid-y medium-grid-frame">
+        <div class="cell shrink header medium-cell-block-container">
+            <h3 v-if="track.data.Session"><b>A</b>valan <b>S</b>imracing <b>S</b>erver - {{ track.data.Name }} - Uptime {{ track.data.Session.CurrentTime }}</h3>
         </div>
-        <div class="top-bar-right">
-            <ul class="menu">
-                <li><a href="#">Three</a></li>
-                <li><a href="#">Four</a></li>
-                <li><a href="#">Five</a></li>
-                <li><a href="#">Six</a></li>
-            </ul>
+        <div class="cell medium-auto grid-x">
+            <div class="cell medium-auto">
+                <canvas id="myCanvas" resize></canvas>
+            </div>
+            <div id="resizer" class="cell"></div>
+            <div id="sidebar" class="cell">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>P</th>
+                            <th>Driver</th>
+                            <th>Best Time</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="vehicle in track.vehicles">
+                            <td>{{ vehicle.Place }}</td>
+                            <td>{{ vehicle.DriverName }}</td>
+                            <td>{{ vehicle.BestLapTime }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
-    <div class="container body-content">
-        @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; 2017 - TelemetryDashboard</p>
-        </footer>
-    </div>
+    @RenderBody()
 
     @RenderSection("Scripts", required: false)
 </body>

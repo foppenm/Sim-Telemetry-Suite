@@ -1,34 +1,47 @@
-﻿import { paper } from "paper";
+﻿import Vue from "vue";
+import { paper } from "paper";
 import { TelemetryHub } from "./TelemetryHub";
-import { TrackModel } from "./TrackModel";
 
 export class App {
 
     constructor() {
         this.handleConnected = this.handleConnected.bind(this);
         this.handleReceive = this.handleReceive.bind(this);
-    }
 
-    start() {
+        this.viewModel = new Vue({
+            el: '#app',
+            data: {
+                track: {
+                    data: {},
+                    vehicles: {}
+                }
+            }
+        });
+
+        // Create an empty project and a view for the canvas
+        let canvas = document.getElementById('myCanvas');
+        paper.setup(canvas);
+
         this.telemetryHub = new TelemetryHub("/telemetry");
         this.telemetryHub.on("connected", this.handleConnected);
         this.telemetryHub.on("receive", this.handleReceive);
 
-        // Draw the view now:
-        paper.view.draw();
+        this.offset = new paper.Point(500, 100);
+
+        // define content to reuse
+        let vehicleDefinition = new paper.Path.Circle({
+            radius: 5,
+            fillColor: 'blue'
+        });
+        this.vehicleSymbol = new paper.Symbol(vehicleDefinition);
     }
 
-    onMouseDrag(event) {
-        let nativeDelta = new paper.Point(
-            event.offsetX - this.mouseNativeStart.x,
-            event.offsetY - this.mouseNativeStart.y
-        );
+    start() {
+        this.vehicles = {};
+        this.vehicleIds = [];
 
-        // Move into view coordinates to subract delta,
-        //  then back into project coords.
-        view.center = view.viewToProject(
-            view.projectToView(this.viewCenterStart)
-                .subtract(nativeDelta));
+        // Draw the view
+        paper.view.draw();
     }
 
     handleConnected(connection) {
@@ -36,74 +49,63 @@ export class App {
     }
 
     handleReceive(message) {
+        let app = this;
 
-        let trackInstance = new TrackModel(message);
+        // Process the new data
+        message.Vehicles.forEach((vehicle) => {
+            let position = vehicle.Position;
+            let newPoint = new paper.Point(app.offset.x + position[0], app.offset.y - position[2]);
 
-        //var project = new paper.Project();
+            let existing = app.vehicles[vehicle.Id];
+            if (existing) {
+                // update existing raw data
+                existing.raw = vehicle;
 
-        var path = new paper.Path();    // Create a Paper.js Path to draw a line into it
-        path.strokeColor = 'black';     // Give the stroke a color
-        path.strokeWidth = 10;
-        let offset = new paper.Point(500, 100);
+                if (existing.raw.CurrentSector1 === -1 && !existing.newLap && !existing.raw.Pit) {
+                    // remove segments on complete lap
+                    console.log(existing.raw.DriverName + " started a flying lap!");
+                    existing.newLap = true;
+                    existing.path.removeSegments();
+                }
+                else if (existing.newLap && existing.raw.CurrentSector1 > -1) {
+                    // Clear newlap flag after 1st sector time
+                    existing.newLap = false;
+                }
+                else if (existing.raw.Pit) {
+                    // remove segments on pit entry
+                    console.log(existing.raw.DriverName + " entered the pits.");
+                    existing.newLap = false;
+                    existing.path.removeSegments();
+                }
 
-        trackInstance.vehicles.forEach(function (vehicle) {
-            let position = vehicle.Pos;
-            let point = new paper.Point(offset.x + position[0], offset.y - position[2]);
+                existing.path.add(newPoint);
+                existing.instance.position = newPoint;
+            }
+            else {
+                app.vehicles[vehicle.Id] = {
+                    raw: vehicle,
+                    path: new paper.Path({
+                        strokeColor: 'black',
+                        strokeWidth: 1
+                    }),
+                    instance: app.vehicleSymbol.place(newPoint),
+                };
 
-            let vehicleCircle = new paper.Path.Circle(point, 2);
-            vehicleCircle.style = {
-                fillColor: new paper.Color(0, 0, 0),
-                strokeColor: new paper.Color(0, 0, 1),
-                strokeWidth: 5
-            };
+                app.vehicleIds.push(vehicle.Id);
+            }
         });
 
-        //path.smooth({ type: 'catmull-rom', factor: 0.1 });
-        //path.closed = true;
+        // TODO: Clean up disconnected vehicles
+        //app.vehicleIds.forEach((id) => {
+        //message.vehicles.find( ...
+        //});
 
-        //let points = [
-        //    [100, 50, 0],
-        //    [500, 300, 0],
-        //    [100, 300, 0],
-        //    [500, 500, 0],
-        //    [700, 50, 0],
-        //    [500, 0, 0],
-        //    [0, -100, 0],
-        //    [100, 50, 0]
-        //];
+        // Reorder the vehicles for the timing table
+        message.Vehicles.sort(function (a, b) { return a.Place - b.Place });
 
-        //var path = new paper.Path();    // Create a Paper.js Path to draw a line into it
-        //path.strokeColor = 'black';     // Give the stroke a color
-        //path.strokeWidth = 10;
-
-        //// Draw all points
-        //let offset = 250;
-        //for (var i = 0; i < points.length; i++) {
-        //    let currentPoint = points[i];
-        //    let point = new paper.Point(currentPoint[0] + offset, currentPoint[1] + offset);
-
-        //    if (i === 0) {
-        //        // Move to start and draw a line from there
-        //        path.moveTo(point);
-        //    }
-
-        //    path.lineTo(point);
-        //}
-
-        //// draw the circle
-        //let vehicle = new paper.Path.Circle(0, 100, 4);
-        //vehicle.strokeColor = 'red';
-        //vehicle.strokeWidth = 10;
-
-        //vehicle.onFrame = function (event) {
-        //    if (offset < path.length) {
-        //        vehicle.position = path.getPointAt(offset);
-        //        offset += event.delta * 50; // speed - 150px/second
-        //    }
-        //    else {
-        //        offset = 0;
-        //    }
-        //}
+        // Update the viewmodel
+        Vue.set(this.viewModel.track, 'vehicles', message.Vehicles);
+        Vue.set(this.viewModel.track, 'data', message);
 
         paper.view.draw();
     }
