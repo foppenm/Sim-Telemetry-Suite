@@ -1,14 +1,35 @@
 ﻿import { App } from "./app";
-import { paper } from "paper";
-
-import "foundation-sites/dist/css/foundation.css";
 
 import jQuery from 'jquery'
 window.$ = jQuery;
 window.jQuery = jQuery;
 
-let canvas = document.getElementById('myCanvas');
-paper.setup(canvas);            // Create an empty project and a view for the canvas
+import "foundation-sites/dist/css/foundation.css";
 
+var startX, startWidth, startHeight;
+let sidebar, resizer;
+
+function initDrag(e) {
+    startX = e.clientX;
+    startWidth = parseInt(document.defaultView.getComputedStyle(sidebar).width, 10);
+    document.documentElement.addEventListener('mousemove', doDrag, false);
+    document.documentElement.addEventListener('mouseup', stopDrag, false);
+}
+
+function doDrag(e) {
+    sidebar.style.width = (startWidth - e.clientX + startX) + 'px';
+}
+
+function stopDrag(e) {
+    document.documentElement.removeEventListener('mousemove', doDrag, false); document.documentElement.removeEventListener('mouseup', stopDrag, false);
+}
+
+function initialize() {
+    resizer = document.getElementById('resizer');
+    sidebar = document.getElementById('sidebar');
+    resizer.addEventListener('mousedown', initDrag, false);
+}
+
+initialize();
 let app = new App();
 app.start();

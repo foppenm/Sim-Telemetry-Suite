@@ -10,10 +10,6 @@ module.exports = {
                 loader: 'babel-loader',
                 exclude: /node_modules/,
                 include: path.join(__dirname, 'src'),
-                //options: {
-                //    presets: ['env'],
-                //    plugins: ['transform-class-properties'],
-                //}
             },
             {
                 test: /\.css$/,
@@ -38,6 +34,11 @@ module.exports = {
     entry: {
         // The loader will follow all chains of reference from this entry point...
         main: ['./app/boot.js']
+    },
+    resolve: {
+        alias: {
+            'vue$': 'vue/dist/vue.esm.js'
+        }
     },
     plugins: [
         new webpack.ProvidePlugin({
