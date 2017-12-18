@@ -39,6 +39,7 @@ namespace TelemetryDashboard
                     HotModuleReplacementClientOptions = new Dictionary<string, string> {
                         { "reload", "true" },
                     },
+                    HotModuleReplacementEndpoint = "/dist/__webpack_hmr"
                 });
             }
             else

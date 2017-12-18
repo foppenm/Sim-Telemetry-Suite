@@ -1,9 +1,6 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.SignalR.Client;
+﻿using Microsoft.AspNetCore.SignalR.Client;
 using Newtonsoft.Json;
-using Receiver.Models;
 using System;
-using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -35,39 +32,6 @@ namespace Receiver
 
             // Start the hub connection
             await _hubConnection.StartAsync();
-
-            var loop = true;
-            do
-            {
-                try
-                {
-                    if (Globals.Messages.Count == 0)
-                    {
-                        Thread.Sleep(1000);
-                        continue;
-                    }
-
-                    // Send the latest message
-                    var message = Globals.Messages.Last();
-                    if (message != null)
-                    {
-                        // Map json to our model
-                        var mappedTrack = Mapper.Map<Track>(message);
-                        var trackAsJson = JsonConvert.SerializeObject(mappedTrack, Formatting.None);
-
-                        // Send the json string to the clients
-                        await _hubConnection.InvokeAsync("status", trackAsJson);
-                    }
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e.ToString());
-                    loop = false;
-                }
-
-                Thread.Sleep(200);
-            } while (loop);
-
         }
 
         private async Task WaitForHubOnline()
@@ -96,7 +60,22 @@ namespace Receiver
 
                 Thread.Sleep(5000);
             } while (waiting);
+        }
 
+        public async Task SendStatus(Models.Track trackInstance)
+        {
+            var json = JsonConvert.SerializeObject(trackInstance, Formatting.None);
+
+            // Send the json string to the clients
+            await _hubConnection.InvokeAsync("status", json);
+        }
+
+        public async Task SendTrackPath(Models.Lap lap)
+        {
+            var json = JsonConvert.SerializeObject(lap, Formatting.None);
+
+            // Send the json string to the clients
+            await _hubConnection.InvokeAsync("trackpath", json);
         }
 
         public void Dispose()

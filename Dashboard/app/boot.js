@@ -1,10 +1,11 @@
 ﻿import { App } from "./app";
-
 import jQuery from 'jquery'
 window.$ = jQuery;
 window.jQuery = jQuery;
-
 import "foundation-sites/dist/css/foundation.css";
+import "toastr/build/toastr.css";
+import "./site.css";
+import * as Toastr from 'toastr';
 
 var startX, startWidth, startHeight;
 let sidebar, resizer;

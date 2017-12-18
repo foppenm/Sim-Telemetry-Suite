@@ -5,24 +5,18 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - TelemetryDashboard</title>
-    <environment include="Development">
-        <link rel="stylesheet" href="~/css/site.css" />
-    </environment>
+
     <environment exclude="Development">
-        <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
+        <link rel="stylesheet" href="~/dist/app.css" asp-append-version="true" />
     </environment>
 </head>
 <body>
 
     <div id="app" class="grid-y medium-grid-frame">
         <div class="cell shrink header medium-cell-block-container">
-            <h3 v-if="track.data.Session"><b>A</b>valan <b>S</b>imracing <b>S</b>erver - {{ track.data.Name }} - Uptime {{ track.data.Session.CurrentTime }}</h3>
+            <h3 v-if="track.data.Session" class="colorCaps"><b>A</b>valan <b>S</b>imracing <b>S</b>erver - {{ track.data.Name }} - Uptime {{ track.data.Session.Uptime }}</h3>
         </div>
         <div class="cell medium-auto grid-x">
-            <div class="cell medium-auto">
-                <canvas id="myCanvas" resize></canvas>
-            </div>
-            <div id="resizer" class="cell"></div>
             <div id="sidebar" class="cell">
                 <table>
                     <thead>
@@ -30,16 +24,26 @@
                             <th>P</th>
                             <th>Driver</th>
                             <th>Best Time</th>
+                            <th>Top Speed</th>
+                            <th>Speed</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr v-for="vehicle in track.vehicles">
-                            <td>{{ vehicle.Place }}</td>
-                            <td>{{ vehicle.DriverName }}</td>
-                            <td>{{ vehicle.BestLapTime }}</td>
+                            <td>{{ vehicle.raw.Place }}</td>
+                            <td>{{ vehicle.raw.DriverName }}</td>
+                            <td>{{ vehicle.raw.BestLapTimeString }}</td>
+                            <td>{{ vehicle.raw.TopSpeed }} kph</td>
+                            <td>{{ vehicle.raw.CurrentSpeed }} kph</td>
                         </tr>
                     </tbody>
                 </table>
+            </div>
+
+            <div id="resizer" class="cell"></div>
+
+            <div class="cell medium-auto">
+                <canvas id="myCanvas" resize></canvas>
             </div>
         </div>
     </div>

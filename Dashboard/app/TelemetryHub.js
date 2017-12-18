@@ -1,6 +1,4 @@
 ﻿import EventEmitter from "eventemitter3";
-
-//import 'signalr/jquery.signalR.js';
 import { HubConnection } from '@aspnet/signalr-client';
 
 export class TelemetryHub extends EventEmitter {
@@ -13,6 +11,10 @@ export class TelemetryHub extends EventEmitter {
 
         connection.on("status", (message) => {
             this.emit('receive', JSON.parse(message));
+        });
+
+        connection.on("trackpath", (message) => {
+            this.emit('receiveTrackPath', JSON.parse(message));
         });
 
         connection.on("done", (connection) => {

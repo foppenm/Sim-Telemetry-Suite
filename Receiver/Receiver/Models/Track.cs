@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Receiver.Models
@@ -17,5 +18,12 @@ namespace Receiver.Models
         public Session Session { get; set; }
 
         public List<Vehicle> Vehicles { get; set; } = new List<Vehicle>();
+
+        /// <summary>
+        /// Path dictionary, containing the lap distance as key and Position as value
+        /// </summary>
+        public Dictionary<int, float[]> Path { get; set; } = new Dictionary<int, float[]>();
+
+        public float PathTime { get; set; }
     }
 }

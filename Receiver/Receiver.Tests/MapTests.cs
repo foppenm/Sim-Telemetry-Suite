@@ -5,6 +5,7 @@ using Receiver.Mappings;
 using Model = Receiver.Models;
 using Json = Receiver.Json;
 using Xunit;
+using System;
 
 namespace Receiver.Tests
 {
@@ -60,6 +61,48 @@ namespace Receiver.Tests
             Assert.Equal(track.trackName, mappedTrack.Name);
             Assert.Equal(track.vehicles[0].driverName, mappedTrack.Vehicles[0].DriverName);
             Assert.Equal(track.vehicles[0].vehicleName, mappedTrack.Vehicles[0].Name);
+        }
+
+        [Fact]
+        public void ValidateFastestLap_ShouldReturnTrue()
+        {
+            var generator = new TrackMapGenerator();
+            var vehicle = new Model.Vehicle
+            {
+                DriverName = "Test",
+                Id = 1,
+                Laps =
+                {
+                    new Model.Lap {
+                        Number = 1,
+                        Time = new float[] { 13f, 13f, 13f },
+                        Path = {  }
+                    }
+                },
+
+            };
+
+            Assert.True(ValidateFastestLap(vehicle));
+        }
+
+        private bool ValidateFastestLap(Model.Vehicle vehicle)
+        {
+            var track = GetNewTrackInstance();
+            var mappedTrack = Mapper.Map<Models.Track>(track);
+
+            var fastestLap = vehicle.BestLap;
+
+            if (mappedTrack.Path.Count == 0 && fastestLap.Path.Count > 0 &&
+                // do vette shit hier
+                false
+                )
+            {
+
+            }
+
+            return false;
+
+
         }
     }
 }

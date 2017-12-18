@@ -12,10 +12,15 @@ canvas[resize] {
 
 #resizer {
     cursor: col-resize;
-    width: 10px;
+    width: 1px;
     background: grey;
 }
 
 #sidebar {
-    width: 300px;
+    width: 500px;
+}
+
+.colorCaps b {
+    font-weight: bold;
+    color: #FF5800;
 }

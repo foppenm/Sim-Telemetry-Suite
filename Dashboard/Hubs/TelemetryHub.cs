@@ -9,5 +9,10 @@ namespace Web.Hubs
         {
             return Clients.AllExcept(new[] { Context.ConnectionId }).InvokeAsync("status", message);
         }
+
+        public Task TrackPath(string message)
+        {
+            return Clients.AllExcept(new[] { Context.ConnectionId }).InvokeAsync("trackpath", message);
+        }
     }
 }

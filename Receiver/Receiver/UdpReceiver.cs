@@ -7,21 +7,30 @@ using System.Threading.Tasks;
 
 namespace Receiver
 {
+    /// <summary>
+    /// This component receives UDP messages and writes them to a global list of messages.
+    /// It will manage this list by keeping a certain amount of recent messages available.
+    /// Older messages will be removed from the global messages container.
+    /// </summary>
     public class UdpReceiver : IDisposable
     {
         private readonly UdpClient _udpClient;
+        private readonly HubSender _hubSender;
 
         public UdpReceiver(int receiveUdpPort)
         {
             _udpClient = new UdpClient(receiveUdpPort);
+            _hubSender = new HubSender("http://localhost:8081/", "telemetry");
         }
 
         public async Task ListenForData()
         {
-            Console.WriteLine("Started listening to UDP packets.");
+            await _hubSender.Start();
 
-            var loop = true;
-            while (loop)
+            Console.WriteLine("Started listening to UDP packets.");
+            TrackMapGenerator trackMapGen = new TrackMapGenerator();
+
+            while (true)
             {
                 try
                 {
@@ -30,17 +39,12 @@ namespace Receiver
                     var json = Encoding.UTF8.GetString(udpResult.Buffer).Trim('\0');
                     var track = JsonConvert.DeserializeObject<Track>(json);
 
-                    // Add the message to the collection
-                    if (Globals.Messages.Count > 9)
-                    {
-                        Globals.Messages.RemoveAt(0);
-                    }
-                    Globals.Messages.Add(track);
+                    // Process the received message
+                    trackMapGen.ProcessTrackMessage(_hubSender, track);
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e.ToString());
-                    loop = false;
+                    Console.WriteLine(e.Message);
                 }
             }
         }

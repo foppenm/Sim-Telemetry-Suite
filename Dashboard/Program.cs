@@ -19,6 +19,7 @@ namespace TelemetryDashboard
 
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
+                .UseUrls("http://0.0.0.0:8081")
                 .UseStartup<Startup>()
                 .Build();
     }
