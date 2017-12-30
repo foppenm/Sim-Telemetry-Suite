@@ -21,12 +21,12 @@
     <ClInclude Include="Include\PluginObjects.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Include\TelemetryBridgePlugin.hpp">
+    <ClInclude Include="Include\BridgePlugin.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\TelemetryBridgePlugin.cpp">
+    <ClCompile Include="Source\BridgePlugin.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
