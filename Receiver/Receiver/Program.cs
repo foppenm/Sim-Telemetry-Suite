@@ -1,8 +1,6 @@
 ﻿using Autofac;
-using AutoMapper;
-using Receiver.Mappings;
+using Microsoft.Extensions.Configuration;
 using System;
-using System.Threading.Tasks;
 
 namespace Receiver
 {
@@ -10,23 +8,20 @@ namespace Receiver
     {
         public static void Main(string[] args)
         {
-            // Initialize Dependency Injection
-            var builder = new ContainerBuilder();
-            builder.RegisterType<HubSender>();
-            builder.RegisterType<TrackMapGenerator>();
+            Setup.ConfigureMappers();
+            var config = Setup.ConfigureApplicationSettings();
+            var container = Setup.ConfigureDependencyInjection(config);
 
-            // Initialize maps
-            Mapper.Initialize(cfg =>
+            using (var scope = container.BeginLifetimeScope())
             {
-                // Add profiles for simulations
-                cfg.AddProfile<Rfactor2Profile>();
-            });
+                var logic = scope.Resolve<ReceiverLogic>();
+                logic.Start();
+            }
 
-            // Start udp receiver
-            var udpReceiver = new UdpReceiver(666);
-            Task.Run(udpReceiver.ListenForData);
-
-            Console.WriteLine("Press Enter to close this window...");
+            Console.WriteLine("#######################################################");
+            Console.WriteLine("Sim Telemetry Suite - Receiver started.");
+            Console.WriteLine("Press any key to shutdown...");
+            Console.WriteLine("#######################################################");
             Console.ReadLine();
         }
     }

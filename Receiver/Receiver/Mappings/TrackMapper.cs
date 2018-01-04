@@ -2,19 +2,19 @@
 using System;
 using System.Linq;
 
-namespace Receiver
+namespace Receiver.Mappings
 {
-    public class TrackMapGenerator
+    public class TrackMapper
     {
         private static Models.Track _track;
 
         public void ProcessTrackMessage(HubSender hub, Json.Track rawMessage)
         {
-            if (_track == null)
-            {
-                // Do basic mapping
-                _track = Mapper.Map<Models.Track>(rawMessage);
-            }
+            //if (_track == null)
+            //{
+            //    // Do basic mapping
+            //    _track = Mapper.Map<Models.Track>(rawMessage);
+            //}
 
             // Update vehicles
             foreach (var jsonVehicle in rawMessage.vehicles)
@@ -86,39 +86,30 @@ namespace Receiver
             }
 
             // Update track path with fastest vehicle path
-            var fastestVehicle = _track.Vehicles.Aggregate((left, right) => (left.BestLapTime < right.BestLapTime ? left : right));
-            if (fastestVehicle != null && fastestVehicle.BestLap != null)
-            {
-                if (ValidateFastestLap(fastestVehicle))
-                {
-                    _track.Path = fastestVehicle.BestLap.Path;
-                    _track.PathTime = fastestVehicle.BestLap.Sector3;
-                    Console.WriteLine($"Refreshed fastest lap with path from {fastestVehicle.DriverName}");
+            //var fastestVehicle = _track.Vehicles.Aggregate((left, right) => (left.BestLapTime < right.BestLapTime ? left : right));
+            //if (fastestVehicle != null && fastestVehicle.BestLap != null)
+            //{
+            //    if (ValidateFastestLap(fastestVehicle))
+            //    {
+            //        _track.Path = fastestVehicle.BestLap.Path;
+            //        _track.PathTime = fastestVehicle.BestLap.Sector3;
+            //        Console.WriteLine($"Refreshed fastest lap with path from {fastestVehicle.DriverName}");
 
-                    hub.SendTrackPath(fastestVehicle.BestLap);
-                }
-            }
+            //        if (hub != null)
+            //        {
+            //            hub.SendTrackPath(fastestVehicle.BestLap);
+            //        }
+            //    }
+            //}
 
             // TODO: Remove disconnected vehicles
             // ...
 
             // Finally send the complete message
-            hub.SendStatus(_track);
-        }
-
-        private bool ValidateFastestLap(Models.Vehicle vehicle)
-        {
-            var fastestLap = vehicle.BestLap;
-
-            if (_track.Path.Count == 0 && fastestLap.Path.Count > 0 &&
-                // do vette shit hier
-                false
-                )
-            {
-
-            }
-
-            return false;
+            //if (hub != null)
+            //{
+            //    hub.SendStatus(_track);
+            //}
         }
 
         private void MapVehicle(Json.Vehicle source, Models.Vehicle destination)
