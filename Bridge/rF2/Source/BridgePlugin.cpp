@@ -1,9 +1,10 @@
-#include <WinSock2.h>			// socket WinSock2.h must be included before <windows.h>
-#include "BridgePlugin.hpp"          // corresponding header file
-#include <math.h>               // for atan2, sqrt
-#include <stdio.h>              // for sample output
+#include <WinSock2.h>		// socket WinSock2.h must be included before <windows.h>
+#include "BridgePlugin.hpp" // corresponding header file
+#include <math.h>           // for atan2, sqrt
+#include <stdio.h>          // for sample output
 #include <limits>
-#include <string>         // std::string
+#include <string>			// std::string
+#include <sstream>			// std::ostringstream
 // socket
 #include <ws2tcpip.h>
 // thread
@@ -149,104 +150,110 @@ void BridgePlugin::UpdateTelemetry(const TelemInfoV01 &info)
 
 void BridgePlugin::UpdateScoring(const ScoringInfoV01 &info)
 {
-	// variables
-	char buffer[8000];
-	ZeroMemory(buffer, sizeof(buffer));		// Fill my block of memory with zeroes
+	std::ostringstream scoringStream;
+	scoringStream
+		// Opening json tag
+		<< "{"
 
-	// Opening json tag
-	snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), "{");
+		// Set the message info
+		<< "\"application\":\"rfactor2\""
+		<< ",\"type\":\"scoring\""
 
-	// Set the message info
-	snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), "\"application\":\"rfactor2\"");
-	snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"type\":\"scoring\"");
+		// General scoring info
+		<< ",\"trackName\":\"%s\"" << info.mTrackName
+		<< ",\"session\":%d" << info.mSession
+		<< ",\"numVehicles\":%d" << info.mNumVehicles
+		<< ",\"currentET\":%.3f" << info.mCurrentET
+		<< ",\"endET\":%.3f" << info.mEndET
+		<< ",\"maxLaps\":%d" << info.mMaxLaps
+		<< ",\"lapDist\":%.1f" << info.mLapDist
 
-	// General scoring info
-	snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"trackName\":\"%s\"", info.mTrackName);
-	snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"session\":%d", info.mSession);
-	snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"numVehicles\":%d", info.mNumVehicles);
-	snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"currentET\":%.3f", info.mCurrentET);
-	snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"endET\":%.3f", info.mEndET);
-	snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"maxLaps\":%d", info.mMaxLaps);
-	snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"lapDist\":%.1f", info.mLapDist);
+		// Session info
+		<< ",\"gamePhase\":%d" << info.mGamePhase
+		<< ",\"yellowFlagState\":%d" << info.mYellowFlagState
+		<< ",\"sectorFlags\":[%d,%d,%d]" << info.mSectorFlag[0] << info.mSectorFlag[1] << info.mSectorFlag[2]
+		<< ",\"inRealTime\":%d" << info.mInRealtime
+		<< ",\"startLight\":%d" << info.mStartLight
+		<< ",\"numRedLights\":%d" << info.mNumRedLights
+		<< ",\"playerName\":\"%s\"" << info.mPlayerName
+		<< ",\"plrFileName\":\"%s\"" << info.mPlrFileName
+		<< ",\"darkCloud\":%.2f" << info.mDarkCloud
+		<< ",\"raining\":%.2f" << info.mRaining
+		<< ",\"ambientTemp\":%.1f" << info.mAmbientTemp
+		<< ",\"trackTemp\":%.1f" << info.mTrackTemp
+		<< ",\"wind\":[%.1f,%.1f,%.1f]" << info.mWind.x << info.mWind.y << info.mWind.z
+		<< ",\"minPathWetness\":%.1f" << info.mMinPathWetness
+		<< ",\"maxPathWetness\":%.1f" << info.mMaxPathWetness
 
-	// Session info
-	snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"gamePhase\":%d", info.mGamePhase);
-	snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"yellowFlagState\":%d", info.mYellowFlagState);
-	snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"sectorFlags\":[%d,%d,%d]", info.mSectorFlag[0], info.mSectorFlag[1], info.mSectorFlag[2]);
-	snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"inRealTime\":%d", info.mInRealtime);
-	snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"startLight\":%d", info.mStartLight);
-	snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"numRedLights\":%d", info.mNumRedLights);
-	snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"playerName\":\"%s\"", info.mPlayerName);
-	snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"plrFileName\":\"%s\"", info.mPlrFileName);
-	snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"darkCloud\":%.2f", info.mDarkCloud);
-	snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"raining\":%.2f", info.mRaining);
-	snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"ambientTemp\":%.1f", info.mAmbientTemp);
-	snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"trackTemp\":%.1f", info.mTrackTemp);
-	snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"wind\":[%.1f,%.1f,%.1f]", info.mWind.x, info.mWind.y, info.mWind.z);
-	snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"minPathWetness\":%.1f", info.mMinPathWetness);
-	snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"maxPathWetness\":%.1f", info.mMaxPathWetness);
+		// Create a vehicle array
+		<< ",\"vehicles\":[";
 
-	// Create a vehicle array
-	snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"vehicles\":[");
-
-	// Print vehicle info
+		// Print vehicle info
 	for (long i = 0; i < info.mNumVehicles; ++i)
 	{
 		VehicleScoringInfoV01 &vinfo = info.mVehicle[i];
 
 		if (i > 0) {
-			snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",{");
+			scoringStream << ",{";
 		}
 		else {
-			snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), "{");
+			scoringStream << "{";
 		}
 
-		snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), "\"id\":%d", vinfo.mID);
-		snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"driverName\":\"%s\"", vinfo.mDriverName);
-		snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"vehicleName\":\"%s\"", vinfo.mVehicleName);
-		snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"totalLaps\":%d", vinfo.mTotalLaps);
-		snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"sector\":%d", vinfo.mSector);
-		snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"finishStatus\":%d", vinfo.mFinishStatus);
-		snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"lapDist\":%.1f", vinfo.mLapDist);
-		snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"pathLateral\":%.2f", vinfo.mPathLateral);
-		snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"relevantTrackEdge\":%.2f", vinfo.mTrackEdge);
-		snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"best\":[%.3f, %.3f, %.3f]", vinfo.mBestSector1, vinfo.mBestSector2, vinfo.mBestLapTime);
-		snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"last\":[%.3f, %.3f, %.3f]", vinfo.mLastSector1, vinfo.mLastSector2, vinfo.mLastLapTime);
-		snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"currentSector1\":%.3f", vinfo.mCurSector1);
-		snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"currentSector2\":%.3f", vinfo.mCurSector2);
-		snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"numPitstops\":%d", vinfo.mNumPitstops);
-		snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"numPenalties\":%d", vinfo.mNumPenalties);
-		snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"isPlayer\":%d", vinfo.mIsPlayer);
-		snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"control\":%d", vinfo.mControl);
-		snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"inPits\":%d", vinfo.mInPits);
-		snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"lapStartET\":%.3f", vinfo.mLapStartET);
-		snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"place\":%d", vinfo.mPlace);
-		snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"vehicleClass\":\"%s\"", vinfo.mVehicleClass);
-		snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"timeBehindNext\":%.3f", vinfo.mTimeBehindNext);
-		snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"lapsBehindNext\":%d", vinfo.mLapsBehindNext);
-		snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"timeBehindLeader\":%.3f", vinfo.mTimeBehindLeader);
-		snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"lapsBehindLeader\":%d", vinfo.mLapsBehindLeader);
-		snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"Pos\":[%.3f,%.3f,%.3f]", vinfo.mPos.x, vinfo.mPos.y, vinfo.mPos.z);
+		// Start writing to scoringStream again
+		scoringStream
+
+		<< "\"id\":%d" << vinfo.mID
+		<< ",\"driverName\":\"%s\"" << vinfo.mDriverName
+		<< ",\"vehicleName\":\"%s\"" << vinfo.mVehicleName
+		<< ",\"totalLaps\":%d" << vinfo.mTotalLaps
+		<< ",\"sector\":%d" << vinfo.mSector
+		<< ",\"finishStatus\":%d" << vinfo.mFinishStatus
+		<< ",\"lapDist\":%.1f" << vinfo.mLapDist
+		<< ",\"pathLateral\":%.2f" << vinfo.mPathLateral
+		<< ",\"relevantTrackEdge\":%.2f" << vinfo.mTrackEdge
+		<< ",\"best\":[%.3f << %.3f << %.3f]" << vinfo.mBestSector1 << vinfo.mBestSector2 << vinfo.mBestLapTime
+		<< ",\"last\":[%.3f << %.3f << %.3f]" << vinfo.mLastSector1 << vinfo.mLastSector2 << vinfo.mLastLapTime
+		<< ",\"currentSector1\":%.3f" << vinfo.mCurSector1
+		<< ",\"currentSector2\":%.3f" << vinfo.mCurSector2
+		<< ",\"numPitstops\":%d" << vinfo.mNumPitstops
+		<< ",\"numPenalties\":%d" << vinfo.mNumPenalties
+		<< ",\"isPlayer\":%d" << vinfo.mIsPlayer
+		<< ",\"control\":%d" << vinfo.mControl
+		<< ",\"inPits\":%d" << vinfo.mInPits
+		<< ",\"lapStartET\":%.3f" << vinfo.mLapStartET
+		<< ",\"place\":%d" << vinfo.mPlace
+		<< ",\"vehicleClass\":\"%s\"" << vinfo.mVehicleClass
+		<< ",\"timeBehindNext\":%.3f" << vinfo.mTimeBehindNext
+		<< ",\"lapsBehindNext\":%d" << vinfo.mLapsBehindNext
+		<< ",\"timeBehindLeader\":%.3f" << vinfo.mTimeBehindLeader
+		<< ",\"lapsBehindLeader\":%d" << vinfo.mLapsBehindLeader
+		<< ",\"Pos\":[%.3f,%.3f,%.3f]" << vinfo.mPos.x << vinfo.mPos.y << vinfo.mPos.z
 
 		// Forward is roughly in the -z direction (although current pitch of car may cause some y-direction velocity)
-		snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"localVel\":[%.2f,%.2f,%.2f]", vinfo.mLocalVel.x, vinfo.mLocalVel.y, vinfo.mLocalVel.z);
-		snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"localAccel\":[%.1f,%.1f,%.1f]", vinfo.mLocalAccel.x, vinfo.mLocalAccel.y, vinfo.mLocalAccel.z);
+		<< ",\"localVel\":[%.2f,%.2f,%.2f]" << vinfo.mLocalVel.x << vinfo.mLocalVel.y << vinfo.mLocalVel.z
+		<< ",\"localAccel\":[%.1f,%.1f,%.1f]" << vinfo.mLocalAccel.x << vinfo.mLocalAccel.y << vinfo.mLocalAccel.z
 
 		// Orientation matrix is left-handed
-		snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"orientationMatrix\":[[%6.3f,%6.3f,%6.3f],[%6.3f,%6.3f,%6.3f],[%6.3f,%6.3f,%6.3f]]", vinfo.mOri[0].x, vinfo.mOri[0].y, vinfo.mOri[0].z, vinfo.mOri[1].x, vinfo.mOri[1].y, vinfo.mOri[1].z, vinfo.mOri[2].x, vinfo.mOri[2].y, vinfo.mOri[2].z);
-
-		snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"localRot\":[%.3f,%.3f,%.3f]", vinfo.mLocalRot.x, vinfo.mLocalRot.y, vinfo.mLocalRot.z);
-		snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), ",\"localRotAccel\":[%.2f,%.2f,%.2f]", vinfo.mLocalRotAccel.x, vinfo.mLocalRotAccel.y, vinfo.mLocalRotAccel.z);
-
-		snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), "}");
+		<< ",\"orientationMatrix\":[[%6.3f,%6.3f,%6.3f],[%6.3f,%6.3f,%6.3f],[%6.3f,%6.3f,%6.3f]]" << vinfo.mOri[0].x << vinfo.mOri[0].y << vinfo.mOri[0].z << vinfo.mOri[1].x << vinfo.mOri[1].y << vinfo.mOri[1].z << vinfo.mOri[2].x << vinfo.mOri[2].y << vinfo.mOri[2].z
+			
+		<< ",\"localRot\":[%.3f,%.3f,%.3f]" << vinfo.mLocalRot.x << vinfo.mLocalRot.y << vinfo.mLocalRot.z
+		<< ",\"localRotAccel\":[%.2f,%.2f,%.2f]" << vinfo.mLocalRotAccel.x << vinfo.mLocalRotAccel.y << vinfo.mLocalRotAccel.z
+			
+		<< "}";
 	}
 
+	// Start writing to scoringStream again
+	scoringStream
+
 	// Close the vehicle array
-	snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), "]");
+	<< "]"
 
 	// Closing json character
-	snprintf(buffer + strlen(buffer), sizeof(buffer) - strlen(buffer), "}");
+	<< "}";
+
+	std::string completedScoringStream = scoringStream.str();
 
 	// Send the buffer out
-	sendto(senderSocket, buffer, sizeof(buffer), 0, (sockaddr*)&sadSender, sizeof(struct sockaddr));
+	sendto(senderSocket, completedScoringStream, sizeof(completedScoringStream), 0, (sockaddr*)&sadSender, sizeof(struct sockaddr));
 }
