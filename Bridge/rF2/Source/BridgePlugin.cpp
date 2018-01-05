@@ -253,7 +253,8 @@ void BridgePlugin::UpdateScoring(const ScoringInfoV01 &info)
 	<< "}";
 
 	std::string completedScoringStream = scoringStream.str();
+	const char *scoring = const_cast<char*>(completedScoringStream.c_str());
 
 	// Send the buffer out
-	sendto(senderSocket, completedScoringStream, sizeof(completedScoringStream), 0, (sockaddr*)&sadSender, sizeof(struct sockaddr));
+	sendto(senderSocket, scoring, sizeof(completedScoringStream), 0, (sockaddr*)&sadSender, sizeof(struct sockaddr));
 }
